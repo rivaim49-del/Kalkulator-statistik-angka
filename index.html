@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Statistik Angka 4D</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
+  color: #172033;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 15px;
+}
+
+.header {
+  background: linear-gradient(135deg, #172554, #2563eb);
+  color: white;
+  padding: 22px 15px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.header h1 {
+  margin: 0 0 8px;
+  font-size: 24px;
+}
+
+.header p {
+  margin: 0;
+  font-size: 13px;
+  opacity: .9;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 180px;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  resize: vertical;
+  font-size: 16px;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: #2563eb;
+}
+
+button {
+  border: 0;
+  border-radius: 9px;
+  padding: 12px 18px;
+  margin-top: 10px;
+  margin-right: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+  background: #2563eb;
+}
+
+button:hover {
+  opacity: .9;
+}
+
+.btn-reset {
+  background: #64748b;
+}
+
+.notice {
+  background: #fff7ed;
+  border-left: 5px solid #f97316;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.position-box {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.position-box h3 {
+  margin: 0 0 10px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.number-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.ball {
+  min-width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.ball strong {
+  display: block;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 9px 6px;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+th {
+  background: #eff6ff;
+}
+
+.bar-wrap {
+  width: 100%;
+  height: 18px;
+  background: #e2e8f0;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 20px;
+}
+
+.bbfs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bbfs-digit {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #172554;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.stat {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat-item {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.stat-item b {
+  display: block;
+  font-size: 21px;
+  margin-top: 5px;
+}
+
+.small {
+  font-size: 12px;
+  color: #64748b;
+}
+
+@media(max-width:600px) {
+  .grid,
+  .stat {
+    grid-template-columns: 1fr;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  th,
+  td {
+    font-size: 13px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>📊 Kalkulator Statistik Angka 4D</h1>
+    <p>Analisis frekuensi historis angka 0–9</p>
+  </div>
+
+  <div class="card">
+
+    <h2>Input Data Hasil 4D</h2>
+
+    <p class="small">
+      Masukkan satu hasil 4D per baris. Contoh: 9330
+    </p>
+
+    <textarea id="inputData"
+      placeholder="9330
+0441
+1552
+2663
+3774
+4885
+5996
+6007"></textarea>
+
+    <br>
+
+    <button onclick="hitungStatistik()">📊 Hitung Statistik</button>
+    <button class="btn-reset" onclick="resetData()">↺ Reset</button>
+
+    <div class="notice">
+      Sistem hanya menghitung statistik/frekuensi dari data yang dimasukkan.
+      Hasil statistik tidak menjamin atau memprediksi hasil undian berikutnya.
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Ringkasan Data</h2>
+
+    <div class="stat">
+
+      <div class="stat-item">
+        Jumlah Data
+        <b id="jumlahData">0</b>
+      </div>
+
+      <div class="stat-item">
+        Total Digit
+        <b id="totalDigit">0</b>
+      </div>
+
+      <div class="stat-item">
+        Digit Terbanyak
+        <b id="digitTerbanyak">-</b>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Urutan Frekuensi Angka 0–9</h2>
+
+    <p class="small">
+      Diurutkan berdasarkan jumlah kemunculan pada seluruh data.
+    </p>
+
+    <div id="ranking" class="number-list"></div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>6 Digit dengan Frekuensi Tertinggi</h2>
+
+    <p class="small">
+      Enam digit yang paling sering muncul berdasarkan data historis.
+    </p>
+
+    <div id="bbfs" class="bbfs"></div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Statistik Posisi AS – COP – KEPALA – EKOR</h2>
+
+    <div class="grid">
+
+      <div class="position-box">
+        <h3>AS</h3>
+        <div id="asList" class="number-list"></div>
+      </div>
+
+      <div class="position-box">
+        <h3>COP</h3>
+        <div id="copList" class="number-list"></div>
+      </div>
+
+      <div class="position-box">
+        <h3>KEPALA</h3>
+        <div id="kepalaList" class="number-list"></div>
+      </div>
+
+      <div class="position-box">
+        <h3>EKOR</h3>
+        <div id="ekorList" class="number-list"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Tabel Frekuensi Angka</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Urutan</th>
+          <th>Angka</th>
+          <th>Frekuensi</th>
+          <th>Persentase</th>
+          <th>Grafik</th>
+        </tr>
+      </thead>
+
+      <tbody id="frequencyTable"></tbody>
+
+    </table>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Statistik Per Posisi</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Angka</th>
+          <th>AS</th>
+          <th>COP</th>
+          <th>KEPALA</th>
+          <th>EKOR</th>
+        </tr>
+      </thead>
+
+      <tbody id="positionTable"></tbody>
+
+    </table>
+
+  </div>
+
+  <div class="card">
+
+    <h2>10 Kombinasi 4 Digit dari Data Historis</h2>
+
+    <p class="small">
+      Daftar ini hanya menampilkan kombinasi yang sudah terdapat
+      pada data input dan mengurutkannya berdasarkan frekuensi.
+    </p>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>4D</th>
+          <th>Frekuensi</th>
+        </tr>
+      </thead>
+
+      <tbody id="top4d"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<script>
+
+function kosongkanArray() {
+  return Array(10).fill(0);
+}
+
+function ambilData() {
+
+  const text = document.getElementById("inputData").value;
+
+  const lines = text
+    .split(/\n|,|;/)
+    .map(x => x.trim())
+    .filter(x => x !== "");
+
+  const data = [];
+
+  lines.forEach(x => {
+
+    /*
+      Hanya menerima angka 4 digit.
+      Jika angka kurang dari 4 digit, tambahkan nol
+      di depan agar tetap menjadi format 4D.
+    */
+
+    const cleaned = x.replace(/\D/g, "");
+
+    if (cleaned.length > 0 && cleaned.length <= 4) {
+
+      const value = cleaned.padStart(4, "0");
+
+      if (value.length === 4) {
+        data.push(value);
+      }
+
+    }
+
+  });
+
+  return data;
+}
+
+
+function urutkanFrekuensi(arr) {
+
+  return arr
+    .map((jumlah, angka) => ({
+      angka: angka,
+      jumlah: jumlah
+    }))
+    .sort((a,b) => {
+
+      if (b.jumlah !== a.jumlah) {
+        return b.jumlah - a.jumlah;
+      }
+
+      return a.angka - b.angka;
+
+    });
+
+}
+
+
+function tampilkanBola(elementId, ranking) {
+
+  const container = document.getElementById(elementId);
+
+  container.innerHTML = "";
+
+  ranking.forEach(item => {
+
+    const div = document.createElement("div");
+
+    div.className = "ball";
+
+    div.innerHTML =
+      item.angka +
+      "<small style='font-size:9px;margin-left:2px'>(" +
+      item.jumlah +
+      ")</small>";
+
+    container.appendChild(div);
+
+  });
+
+}
+
+
+function hitungStatistik() {
+
+  const data = ambilData();
+
+  if (data.length === 0) {
+
+    alert("Masukkan minimal satu hasil 4D.");
+
+    return;
+  }
+
+
+  let semua = kosongkanArray();
+
+  let as = kosongkanArray();
+
+  let cop = kosongkanArray();
+
+  let kepala = kosongkanArray();
+
+  let ekor = kosongkanArray();
+
+
+  const kombinasi = {};
+
+
+  data.forEach(hasil => {
+
+    for (let i = 0; i < 4; i++) {
+
+      const angka = Number(hasil[i]);
+
+      semua[angka]++;
+
+    }
+
+    as[Number(hasil[0])]++;
+
+    cop[Number(hasil[1])]++;
+
+    kepala[Number(hasil[2])]++;
+
+    ekor[Number(hasil[3])]++;
+
+
+    if (!kombinasi[hasil]) {
+      kombinasi[hasil] = 0;
+    }
+
+    kombinasi[hasil]++;
+
+  });
+
+
+  const ranking = urutkanFrekuensi(semua);
+
+  const rankingAS = urutkanFrekuensi(as);
+
+  const rankingCOP = urutkanFrekuensi(cop);
+
+  const rankingKepala = urutkanFrekuensi(kepala);
+
+  const rankingEkor = urutkanFrekuensi(ekor);
+
+
+  /*
+    RINGKASAN
+  */
+
+  document.getElementById("jumlahData").textContent =
+    data.length;
+
+  document.getElementById("totalDigit").textContent =
+    data.length * 4;
+
+  document.getElementById("digitTerbanyak").textContent =
+    ranking[0].angka;
+
+
+  /*
+    RANKING
+  */
+
+  tampilkanBola("ranking", ranking);
+
+
+  /*
+    6 DIGIT FREKUENSI TERTINGGI
+  */
+
+  const bbfs = document.getElementById("bbfs");
+
+  bbfs.innerHTML = "";
+
+  ranking.slice(0,6).forEach(item => {
+
+    const div = document.createElement("div");
+
+    div.className = "bbfs-digit";
+
+    div.textContent = item.angka;
+
+    bbfs.appendChild(div);
+
+  });
+
+
+  /*
+    POSISI
+  */
+
+  tampilkanBola("asList", rankingAS);
+
+  tampilkanBola("copList", rankingCOP);
+
+  tampilkanBola("kepalaList", rankingKepala);
+
+  tampilkanBola("ekorList", rankingEkor);
+
+
+  /*
+    TABEL FREKUENSI
+  */
+
+  const table =
+    document.getElementById("frequencyTable");
+
+  table.innerHTML = "";
+
+  const max =
+    Math.max(...semua);
+
+
+  ranking.forEach((item,index) => {
+
+    const persen =
+      ((item.jumlah / (data.length * 4)) * 100)
+      .toFixed(2);
+
+
+    const width =
+      max > 0
+      ? (item.jumlah / max) * 100
+      : 0;
+
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+
+      <td>${index + 1}</td>
+
+      <td><b>${item.angka}</b></td>
+
+      <td>${item.jumlah}</td>
+
+      <td>${persen}%</td>
+
+      <td>
+        <div class="bar-wrap">
+          <div class="bar"
+               style="width:${width}%"></div>
+        </div>
+      </td>
+
+    `;
+
+    table.appendChild(row);
+
+  });
+
+
+  /*
+    TABEL POSISI
+  */
+
+  const positionTable =
+    document.getElementById("positionTable");
+
+  positionTable.innerHTML = "";
+
+
+  for (let i = 0; i < 10; i++) {
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+
+      <td><b>${i}</b></td>
+
+      <td>${as[i]}</td>
+
+      <td>${cop[i]}</td>
+
+      <td>${kepala[i]}</td>
+
+      <td>${ekor[i]}</td>
+
+    `;
+
+    positionTable.appendChild(row);
+
+  }
+
+
+  /*
+    TOP 4D HISTORIS
+  */
+
+  const top4d =
+    document.getElementById("top4d");
+
+  top4d.innerHTML = "";
+
+
+  const sorted4D =
+    Object.entries(kombinasi)
+      .sort((a,b) => b[1] - a[1])
+      .slice(0,10);
+
+
+  if (sorted4D.length === 0) {
+
+    top4d.innerHTML =
+      `<tr><td colspan="3">Tidak ada data</td></tr>`;
+
+  } else {
+
+    sorted4D.forEach((item,index) => {
+
+      const row =
+        document.createElement("tr");
+
+      row.innerHTML = `
+
+        <td>${index + 1}</td>
+
+        <td><b>${item[0]}</b></td>
+
+        <td>${item[1]}</td>
+
+      `;
+
+      top4d.appendChild(row);
+
+    });
+
+  }
+
+}
+
+
+function resetData() {
+
+  document.getElementById("inputData").value = "";
+
+  document.getElementById("jumlahData").textContent = "0";
+
+  document.getElementById("totalDigit").textContent = "0";
+
+  document.getElementById("digitTerbanyak").textContent = "-";
+
+  document.getElementById("ranking").innerHTML = "";
+
+  document.getElementById("bbfs").innerHTML = "";
+
+  document.getElementById("asList").innerHTML = "";
+
+  document.getElementById("copList").innerHTML = "";
+
+  document.getElementById("kepalaList").innerHTML = "";
+
+  document.getElementById("ekorList").innerHTML = "";
+
+  document.getElementById("frequencyTable").innerHTML = "";
+
+  document.getElementById("positionTable").innerHTML = "";
+
+  document.getElementById("top4d").innerHTML = "";
+
+}
+
+
+/*
+  Contoh otomatis saat halaman dibuka.
+*/
+
+window.addEventListener("load", function() {
+
+  hitungStatistik();
+
+});
+
+</script>
+
+</body>
+</html>
